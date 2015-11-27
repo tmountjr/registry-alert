@@ -1,0 +1,11 @@
+{
+  "name": "registry-alert",
+  "version": "0.1.0",
+  "description": "Send an email alert when a new wedding registry item has been purchased.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tom Mount <tmountjr@gmail.com>",
+  "license": "Apache-2.0"
+}
