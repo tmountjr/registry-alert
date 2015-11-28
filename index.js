@@ -49,3 +49,9 @@ function parseResponse(rawHtmlResponse) {
 function importInventory(path) {
 	return require(path);
 }
+
+function compareInventories(prevInventory, newInventory) {
+	// go through the keys to newInventory; if a similar key doesn't exist in prevInventory, the
+	// whole array in newInventory is new. If the key exists in both, run a difference between the two
+	// arrays; the resultant array are all the new items in the pre-existing category.
+}
