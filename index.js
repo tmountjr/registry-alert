@@ -4,7 +4,7 @@ var fs = require('fs'),
 	nconf = require('nconf'),
 	request = require('request'),
 	cheerio = require('cheerio'),
-	newInventory = {};
+	newInventory = [];
 
 // for now, just read the response.html file in the project root.
 var response = fs.readFileSync('./response.html');
@@ -22,15 +22,15 @@ function toTitleCase(str) {
 
 function parseResponse(rawHtmlResponse) {
 	var $ = cheerio.load(rawHtmlResponse),
-		inventory = {};
+		inventory = {}
 
 	$("h2.ui-accordion-header").each(function(h2Index, h2Element) {
 
 		var thisCategoryName = $(this).find('a').text().replace(/\s\(\d+\)$/, '');
+
 		inventory[thisCategoryName] = [];
 
 		$(this).next('div.accordionDiv').find('li.productRow').each(function(liIndex, liElement) {
-
 			var thisCategoryList = {},
 				hiddenInputs = $(this).find('li.productLastColumn');
 
@@ -38,7 +38,7 @@ function parseResponse(rawHtmlResponse) {
 			thisCategoryList.sku = $(hiddenInputs).find('input[name=skuId]').val();
 			thisCategoryList.pid = $(hiddenInputs).find('input[name=prodId]').val();
 
-			inventory[thisCategoryName].push(thisCategoryList);
+			inventory[thisCategoryName].push(thisCategoryList.sku);
 		});
 
 	});
