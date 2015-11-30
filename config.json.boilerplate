@@ -1,0 +1,8 @@
+{
+	"smtp": {
+		"username": "[YOUR USERNAME HERE]",
+		"password": "[YOUR PASSWORD HERE]",
+		"from": "[FROM EMAIL HERE]",
+		"to": "[TO EMAIL HERE]",
+	}
+}
