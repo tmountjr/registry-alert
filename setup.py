@@ -60,6 +60,9 @@ if currentInventoryResponse.lower() == 'y':
 	if isJson(jsonString) == False:
 		print "Invalid JSON string. You can re-run this script to import the 'inventory.json' file again."
 		jsonString = ''
+	else:
+		with open('inventory.json', 'w' as outfile):
+			outfile.write(jsonString)
 
 
 options = {
