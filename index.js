@@ -3,22 +3,23 @@
 var fs = require('fs'),
 	nconf = require('nconf'),
 	request = require('request'),
-	cheerio = require('cheerio'),
-	newInventory = [];
+	cheerio = require('cheerio');
 
-// for now, just read the response.html file in the project root.
-var response = fs.readFileSync('./response.html');
-newInventory = parseResponse(response);
-fs.writeFileSync('./inventory.json', JSON.stringify(newInventory));
+var oldInventory = importInventory('./oldInventory.json');
+var newInventory = importInventory('./newInventory.json');
 
-currentInventory = importInventory('./inventory.json');
+console.log(compareInventories(oldInventory, newInventory));
+
+
+///////////////////////
+// SUPPORT FUNCTIONS //
+///////////////////////
 
 function toTitleCase(str) {
     return str.replace(/\w\S*/g, function(txt) {
     	return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
 }
-
 
 function parseResponse(rawHtmlResponse) {
 	var $ = cheerio.load(rawHtmlResponse),
@@ -50,8 +51,44 @@ function importInventory(path) {
 	return require(path);
 }
 
+function saveInventory(path, inventory) {
+	fs.writeFileSync(path, JSON.stringify(inventory));
+}
+
 function compareInventories(prevInventory, newInventory) {
 	// go through the keys to newInventory; if a similar key doesn't exist in prevInventory, the
 	// whole array in newInventory is new. If the key exists in both, run a difference between the two
 	// arrays; the resultant array are all the new items in the pre-existing category.
+	
+	var toReturn = {};
+	
+	for (newInventoryCategory in newInventory) {
+
+
+		if (! prevInventory[newInventoryCategory]) {
+			// the entire newInventoryCategory array is new
+			// console.log(newInventoryCategory, "is new, has", newInventory[newInventoryCategory]);
+			toReturn[newInventoryCategory] = newInventory[newInventoryCategory];
+		} else {
+			// there is a matching prevInventory category
+			// diff the new and previous categories
+			
+			// ["a", "b", "c", "d"].filter(function(x){return ["a", "b", "c"].indexOf(x) == -1})
+			// retrurns: ["d"]
+			
+			var newItems = newInventory[newInventoryCategory].filter(function(x) {
+				return prevInventory[newInventoryCategory].indexOf(x) == -1;
+			});
+
+			if (newItems.length == 0) {
+				// no new items for this category
+			} else {
+				// console.log(newInventoryCategory, "now has", newItems);
+				toReturn[newInventoryCategory] = newItems;
+			}
+
+		}
+	}
+
+	return toReturn;
 }
