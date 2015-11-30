@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/local/bin/node
 
 var fs = require('fs'),
 	nconf = require('nconf'),
