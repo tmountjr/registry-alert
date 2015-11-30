@@ -42,8 +42,6 @@ smtpPassword = getpass.getpass("Enter the SMTP password (" + defaultsDisplay['sm
 smtpFrom = raw_input("Enter the 'From' address (" + defaultsDisplay['smtp']['from'] + "): ")
 smtpTo = raw_input("Enter the 'To' address (" + defaultsDisplay['smtp']['to'] + "): ")
 
-currentInventoryResponse = raw_input("Do you have a current 'inventory.json' file to import? (y/N): ")
-
 if configExists:
 	if smtpUsername == '':
 		smtpUsername = defaults['smtp']['username']
@@ -53,17 +51,6 @@ if configExists:
 		smtpFrom = defaults['smtp']['from']
 	if smtpTo == '':
 		smtpTo = defaults['smtp']['to']
-
-
-if currentInventoryResponse.lower() == 'y':
-	jsonString = raw_input("Enter the JSON string as one line here: ")
-	if isJson(jsonString) == False:
-		print "Invalid JSON string. You can re-run this script to import the 'inventory.json' file again."
-		jsonString = ''
-	else:
-		with open('inventory.json', 'w' as outfile):
-			outfile.write(jsonString)
-
 
 options = {
 	'smtp': {
@@ -76,3 +63,13 @@ options = {
 
 with open('config.json', 'w') as outfile:
 	json.dump(options, outfile)
+
+currentInventoryResponse = raw_input("Do you have a current 'inventory.json' file to import? (y/N): ")
+
+if currentInventoryResponse.lower() == 'y':
+	jsonString = raw_input("Enter the JSON string as one line here: ")
+	if isJson(jsonString) == False:
+		print "Invalid JSON string. You can re-run this script to import the 'inventory.json' file again."
+	else:
+		with open('inventory.json', 'w' as outfile):
+			outfile.write(jsonString)
