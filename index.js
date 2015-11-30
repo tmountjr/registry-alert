@@ -42,15 +42,15 @@ var callback = function(response) {
 	// all the good stuff happens here
 	response.on('end', function() {
 		var oldInventory = importInventory('./inventory.json'),	// loaded from disk or memory
-			newInventory = parseResponse(body);					// parsed from raw HTML request response
+			newInventory = parseResponse(body),					// parsed from raw HTML request response
+			d = new Date();
 
 		compared = compareInventories(oldInventory, newInventory);
 		// console.log(compared);
 
 		if (Object.keys(compared).length == 0) {
 			// nothing new found
-			var d = new Date();
-			console.log(d + "\t" + "No new items found.");
+			console.log(d + "\tNo new items found.");
 		} else {
 			var $ = cheerio.load(body),
 				emailBody = "The following new items have been found:\n";
@@ -68,6 +68,7 @@ var callback = function(response) {
 			}
 
 			// console.log(emailBody);
+			console.log(d + "\tNew items found: ", compared);
 			sendEmail(
 				nconf.get("smtp:from"),
 				nconf.get("smtp:to"),
