@@ -4,9 +4,7 @@ var fs = require('fs'),
 	nconf = require('nconf'),
 	http = require('http'),
 	cheerio = require('cheerio'),
-	requestObject,
-	oldInventory,	// loaded from disk or memory
-	newInventory;	// parsed from raw html request response
+	requestObject;
 
 nconf.file('config.json');
 
@@ -35,16 +33,16 @@ var options = {
 };
 
 var callback = function(response) {
-	var str = '';
+	var body = '';
 
 	response.on('data', function(chunk) {
-		str += chunk;
+		body += chunk;
 	});
 
 	// all the good stuff happens here
 	response.on('end', function() {
-		oldInventory = importInventory('./inventory.json');
-		newInventory = parseResponse(str);
+		var oldInventory = importInventory('./inventory.json'),	// loaded from disk or memory
+			newInventory = parseResponse(body);					// parsed from raw HTML request response
 
 		compared = compareInventories(oldInventory, newInventory);
 		// console.log(compared);
@@ -52,7 +50,7 @@ var callback = function(response) {
 		if (Object.keys(compared).length == 0) {
 			// nothing new found
 		} else {
-			var $ = cheerio.load(str),
+			var $ = cheerio.load(body),
 				emailBody = "The following new items have been found:\n";
 
 			for (var category in compared) {
@@ -72,7 +70,15 @@ var callback = function(response) {
 				nconf.get("smtp:from"),
 				nconf.get("smtp:to"),
 				'New Wedding Registry Items!',
-				emailBody
+				emailBody,
+				function(err, info) {
+					if (err) {
+						throw err;
+					} else {
+						// email sent, so save the new inventory to disk
+						saveInventory('./inventory.json', newInventory);
+					}
+				}
 			);
 		}
 	});
@@ -176,7 +182,7 @@ function compareInventories(prevInventory, newInventory) {
 	return toReturn;
 }
 
-function sendEmail(from, to, subject, body) {
+function sendEmail(from, to, subject, body, callback) {
 	var nodemailer = require('nodemailer'),
 		smtpTransport = require('nodemailer-smtp-transport'),
 		transporter;
@@ -195,7 +201,5 @@ function sendEmail(from, to, subject, body) {
 		'to': to,
 		'subject': subject,
 		'text': body
-	}, function(err, info) {
-		if (err) throw err;
-	});
+	}, callback);
 }
