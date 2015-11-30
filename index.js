@@ -49,6 +49,8 @@ var callback = function(response) {
 
 		if (Object.keys(compared).length == 0) {
 			// nothing new found
+			var d = new Date();
+			console.log(d + "\t" + "No new items found.");
 		} else {
 			var $ = cheerio.load(body),
 				emailBody = "The following new items have been found:\n";
