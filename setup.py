@@ -49,14 +49,26 @@ print ""
 for section in configOptions['sections']:
 	print section['display']
 	for var in section['vars']:
+		# ensure that the options object contains the current key from the canonical source
+		if not section['name'] in options:
+			options[section['name']] = {}
+
 		askString = var['prompt'] + " (%s): "
-		display = options[section['name']][var['name']]
+
+		# get the display value. If this options key doesn't have this particular child, use the default value; otherwise use the current value
+		if not var['name'] in options[section['name']]:
+			display = var['defaultValue']
+		else:
+			display = options[section['name']][var['name']]
+
+		# handle secure and insecure prompts (and display values) differently
 		if var['secure']:
 			display = var['secureDisplay']
 			response = getpass.getpass(askString % display)
 		else:
 			response = raw_input(askString % display)
 
+		# handle response. blank response means "keep default"
 		if response != '':
 			options[section['name']][var['name']] = response
 	print ""
