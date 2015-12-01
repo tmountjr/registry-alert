@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import json, getpass, os.path, copy
+import json, getpass, os.path
 
 def isJson(jsonString):
 	if jsonString == '':
@@ -12,77 +12,69 @@ def isJson(jsonString):
 		return False
 	return True
 
+def getJsonFile(path):
+	if os.path.exists(path):
+		with open(path, 'r') as infile:
+			jsonData = infile.read()
+		return json.loads(jsonData)
+	else:
+		raise ValueError("Path '%s' does not exist." % path)
+
+def writeJsonFile(path, data):
+	with open(path, 'w') as outfile:
+		json.dump(data, outfile)
+	return True
+
+configOptions = getJsonFile('setup.py.json')
+
+# create a default config dict from the config options
+options = {}
+for section in configOptions['sections']:
+	thisSection = {}
+	for var in section['vars']:
+		thisSection[var['name']] = var['defaultValue']
+	options[section['name']] = thisSection
+
+# check for a currently existing config file
+try:
+	options = getJsonFile('config.json')
+except ValueError:
+	# ignore a missing file
+	pass
 
 print "Registry Alert Setup"
-print " "
-
-# If 'config.json' exists, load the values
-defaults = {
-	'smtp': {
-		'username': '',
-		'password': '',
-		'from': '',
-		'to': ''
-	},
-	'bbb': {
-		'registryId': ''
-	}
-}
-
-configExists = False
-
-if os.path.exists('config.json'):
-	jsonData = open('config.json', 'r').read()
-	if isJson(jsonData):
-		defaults = json.loads(jsonData)
-		configExists = True
-
-defaultsDisplay = copy.deepcopy(defaults)
-defaultsDisplay['smtp']['password'] = '***'
-
-print "[SMTP options]"
-smtpUsername = raw_input("Enter the SMTP username (" + defaultsDisplay['smtp']['username'] + "): ")
-smtpPassword = getpass.getpass("Enter the SMTP password (" + defaultsDisplay['smtp']['password'] + "): ")
-smtpFrom = raw_input("Enter the 'From' address (" + defaultsDisplay['smtp']['from'] + "): ")
-smtpTo = raw_input("Enter the 'To' address (" + defaultsDisplay['smtp']['to'] + "): ")
-
 print ""
-print "[Registry options]"
-bbbRegistryId = raw_input("Enter the Bed Bath & Beyond wedding registry id (" + defaultsDisplay['bbb']['registryId'] + "): ")
 
-if configExists:
-	if smtpUsername == '':
-		smtpUsername = defaults['smtp']['username']
-	if smtpPassword == '':
-		smtpPassword = defaults['smtp']['password']
-	if smtpFrom == '':
-		smtpFrom = defaults['smtp']['from']
-	if smtpTo == '':
-		smtpTo = defaults['smtp']['to']
-	if bbbRegistryId == '':
-		bbbRegistryId = defaults['bbb']['registryId']
+# loop through the config options again and ask for inputs
+for section in configOptions['sections']:
+	print section['display']
+	for var in section['vars']:
+		askString = var['prompt'] + " (%s): "
+		display = options[section['name']][var['name']]
+		if var['secure']:
+			display = var['secureDisplay']
+			response = getpass.getpass(askString % display)
+		else:
+			response = raw_input(askString % display)
 
-options = {
-	'smtp': {
-		'username': smtpUsername,
-		'password': smtpPassword,
-		'from': smtpFrom,
-		'to': smtpTo
-	},
-	'bbb': {
-		'registryId': bbbRegistryId
-	}
-}
+		if response != '':
+			options[section['name']][var['name']] = response
+	print ""
 
-with open('config.json', 'w') as outfile:
-	json.dump(options, outfile)
+# write the new options to disk
+writeJsonFile('config.json', options)
 
+# report back
+print "config.json file successfully written."
+print ""
+
+# check if the user has an existing inventory string to import.
+print "[Inventory import]"
 currentInventoryResponse = raw_input("Do you have a current 'inventory.json' file to import? (y/N): ")
-
 if currentInventoryResponse.lower() == 'y':
-	jsonString = raw_input("Enter the JSON string as one line here: ")
-	if isJson(jsonString) == False:
-		print "Invalid JSON string. You can re-run this script to import the 'inventory.json' file again."
-	else:
+	jsonString = raw_input("Enter or paste the JSON string as one line here: ")
+	if isJson(jsonString):
 		with open('inventory.json', 'w') as outfile:
 			outfile.write(jsonString)
+	else:
+		print "Invalid JSON string. You can re-run this script to import the 'inventory.json' file again."
