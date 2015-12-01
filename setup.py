@@ -23,6 +23,9 @@ defaults = {
 		'password': '',
 		'from': '',
 		'to': ''
+	},
+	'bbb': {
+		'registryId': ''
 	}
 }
 
@@ -37,10 +40,15 @@ if os.path.exists('config.json'):
 defaultsDisplay = copy.deepcopy(defaults)
 defaultsDisplay['smtp']['password'] = '***'
 
+print "[SMTP options]"
 smtpUsername = raw_input("Enter the SMTP username (" + defaultsDisplay['smtp']['username'] + "): ")
 smtpPassword = getpass.getpass("Enter the SMTP password (" + defaultsDisplay['smtp']['password'] + "): ")
 smtpFrom = raw_input("Enter the 'From' address (" + defaultsDisplay['smtp']['from'] + "): ")
 smtpTo = raw_input("Enter the 'To' address (" + defaultsDisplay['smtp']['to'] + "): ")
+
+print ""
+print "[Registry options]"
+bbbRegistryId = raw_input("Enter the Bed Bath & Beyond wedding registry id (" + defaultsDisplay['bbb']['registryId'] + "): ")
 
 if configExists:
 	if smtpUsername == '':
@@ -51,6 +59,8 @@ if configExists:
 		smtpFrom = defaults['smtp']['from']
 	if smtpTo == '':
 		smtpTo = defaults['smtp']['to']
+	if bbbRegistryId == '':
+		bbbRegistryId = defaults['bbb']['registryId']
 
 options = {
 	'smtp': {
@@ -58,6 +68,9 @@ options = {
 		'password': smtpPassword,
 		'from': smtpFrom,
 		'to': smtpTo
+	},
+	'bbb': {
+		'registryId': bbbRegistryId
 	}
 }
 

@@ -4,5 +4,8 @@
 		"password": "[YOUR PASSWORD HERE]",
 		"from": "[FROM EMAIL HERE]",
 		"to": "[TO EMAIL HERE]",
+	},
+	"bbb": {
+		"registryId": "[WEDDING REGISTRY HERE]"
 	}
 }
