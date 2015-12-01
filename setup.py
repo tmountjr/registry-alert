@@ -53,20 +53,20 @@ for section in configOptions['sections']:
 		if not section['name'] in options:
 			options[section['name']] = {}
 
-		askString = var['prompt'] + " (%s): "
-
 		# get the display value. If this options key doesn't have this particular child, use the default value; otherwise use the current value
 		if not var['name'] in options[section['name']]:
 			display = var['defaultValue']
 		else:
 			display = options[section['name']][var['name']]
 
+		askString = var['prompt'] + " (%s): " % display
+
 		# handle secure and insecure prompts (and display values) differently
 		if var['secure']:
 			display = var['secureDisplay']
-			response = getpass.getpass(askString % display)
+			response = getpass.getpass(askString)
 		else:
-			response = raw_input(askString % display)
+			response = raw_input(askString)
 
 		# handle response. blank response means "keep default"
 		if response != '':
