@@ -10,7 +10,7 @@ nconf.file('config.json');
 
 // dropping this here so things can be changed later on if necessary
 requestObject = {
-	registryId: "542647053",
+	registryId: nconf.get("bbb:registryId"),
 	startIdx: "0",
 	isGiftGiver: true,
 	blkSize: "1000",

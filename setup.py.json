@@ -1,0 +1,48 @@
+{
+	"sections": [
+		{
+			"name": "smtp",
+			"display": "[SMTP options]",
+			"vars": [
+				{
+					"name": "username",
+					"defaultValue": "",
+					"secure": false,
+					"prompt": "Enter the SMTP username"
+				},
+				{
+					"name": "password",
+					"defaultValue": "",
+					"secure": true,
+					"secureDisplay": "***",
+					"prompt": "Enter the SMTP password"
+				},
+				{
+					"name": "from",
+					"defaultValue": "",
+					"secure": false,
+					"prompt": "Enter the 'From' address"
+				},
+				{
+					"name": "to",
+					"defaultValue": "",
+					"secure": false,
+					"prompt": "Enter the 'To' address"
+				}
+			]
+		},
+		{
+			"name": "bbb",
+			"display": "[Registry options]",
+			"vars": [
+				{
+					"name": "registryId",
+					"defaultValue": "",
+					"defaultDisplay": "",
+					"secure": false,
+					"prompt": "Enter the Bed Bath & Beyond wedding registry id"
+				}
+			]
+		}
+	]
+}
