@@ -13,5 +13,8 @@
     "nconf": "^0.8.2",
     "nodemailer": "^1.10.0",
     "nodemailer-smtp-transport": "^1.0.4"
+  },
+  "devDependencies": {
+    "nodeunit": "^0.9.1"
   }
 }
