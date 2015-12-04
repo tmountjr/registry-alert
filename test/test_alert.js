@@ -1,5 +1,4 @@
-var alert = require('../lib/index.js'),
-	s = require('../lib/support.js'),
+var s = require('../lib/support.js'),
 	pwd = process.env.PWD;
 
 module.exports = {
