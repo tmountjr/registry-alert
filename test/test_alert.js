@@ -1,6 +1,9 @@
-var alert = require('../src/alert.js');
+var alert = require('../lib/index.js'),
+	s = require('../lib/support.js');
 
-exports['initTest'] = function(test) {
-	test.equals(2 * 2, 4);
-	test.done();
+module.exports = {
+	testLoadConfig: function(test) {
+		test.ok(s.loadConfig(process.env.PWD + '/lib/config.json'));
+		test.done();
+	}
 }

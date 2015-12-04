@@ -4,7 +4,7 @@
   "description": "Send an email alert when a new wedding registry item has been purchased.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/nodeunit/bin/nodeunit test"
   },
   "author": "Tom Mount <tmountjr@gmail.com>",
   "license": "Apache-2.0",
