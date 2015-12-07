@@ -50,14 +50,22 @@ module.exports = {
 	testInventoryCompare: function(test) {
 		var expected = {},
 			oldInventory = newInventory = {
-				"a": [
-					"z",
-					"y"
-				],
-				"b": [
-					"x",
-					"w"
-				]
+				"cat1": {
+					"sku1": {
+						"requested": 1,
+						"purchased": 2
+					},
+					"sku2": {
+						"requested": 3,
+						"purchased": 4
+					}
+				},
+				"cat2": {
+					"sku3": {
+						"requested": 5,
+						"purchased": 6
+					}
+				}
 			};
 
 		test.deepEqual(expected, s.inventory.compare(oldInventory, newInventory));
