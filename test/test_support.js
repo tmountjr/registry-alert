@@ -30,6 +30,8 @@ module.exports = {
 
 	inventory: {
 		setUp: function(callback) {
+
+			// set up some objects to represent various inventory data states
 			this.baseline = {
 				"cat1": {
 					"sku1": {
@@ -121,7 +123,7 @@ module.exports = {
 
 		tearDown: function(callback) {
 			callback();
-		}
+		},
 
 		testInventoryImport: function(test) {
 			test.doesNotThrow(function() {
